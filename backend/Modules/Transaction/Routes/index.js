@@ -60,7 +60,7 @@ router.post(
       lastName: req.body.lastName,
       phone: req.body.phone,
       email: req.body.email,
-      date: req.body.date,
+      date: new Date(),
       transactionStatus: req.body.transactionStatus,
       paymentMode: req.body.paymentMode,
       transactionId: req.body.transactionId,
