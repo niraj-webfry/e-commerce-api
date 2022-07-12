@@ -36,7 +36,7 @@ const upload = multer({
 router.get('/getAllTransaction', function (req, res) {
   transactionModel
     .find()
-    .select('product_name price quantity')
+    .select('firstName lastName _id')
     .exec()
     .then((data) => {
       res.status(200).json({
