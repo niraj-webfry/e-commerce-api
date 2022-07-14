@@ -34,19 +34,45 @@ const upload = multer({
 
 //routes
 router.get('/getAllTransaction', function (req, res) {
-  transactionModel
-    .find()
-    .select()
-    .exec()
-    .then((data) => {
-      res.status(200).json({
-        message: 'OK',
-        results: data,
+  // transactionModel
+  //   .find()
+  //   .select()
+  //   .exec()
+  //   .then((data) => {
+  //     res.status(200).json({
+  //       message: 'OK',
+  //       results: data,
+  //     })
+  //   })
+  //   .catch((err) => {
+  //     res.json(err)
+  //   })
+  console.log(req.query.page + ': ' + req.query.limit)
+  if (req.query.page && req.query.limit) {
+    transactionModel
+      .paginate({}, { page: req.query.page, limit: req.query.limit })
+      .then((data) => {
+        res.status(200).json({
+          message: 'OK',
+          results: data,
+        })
       })
-    })
-    .catch((err) => {
-      res.json(err)
-    })
+      .catch((error) => {
+        res.status(400).json({ error })
+      })
+  } else {
+    transactionModel
+      .find()
+      .then((data) => {
+        res.status(200).json({
+          message: 'OK',
+          results: data,
+        })
+      })
+      .catch((error) => {
+        res.status(400).json({ error })
+      })
+  }
 })
 
 router.post('/getTransaction', async function (req, res) {
@@ -70,6 +96,10 @@ router.post(
   upload.single('image'),
   async (req, res) => {
     console.log(req.file)
+    if (!req.file) {
+      res.status(400).json({ message: 'upload image only' })
+    }
+
     var productDetails = await new transactionModel({
       _id: mongoose.Types.ObjectId(),
       firstName: req.body.firstName,
